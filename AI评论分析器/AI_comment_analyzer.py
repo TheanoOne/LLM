@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 def connect():
     client = OpenAI(
-        api_key=os.getenv('API_key'),
         base_url='https://open.bigmodel.cn/api/paas/v4'
     )
     return client
