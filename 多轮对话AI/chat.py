@@ -23,6 +23,8 @@ class GLM_4_7_flash:
         )
 
     def gen_response(self):
+        print(f'{os.getenv("model")}: ')
+        print('===========Thinking===========')
         self.response = self.client.chat.completions.create(
             model=os.getenv('model'),
             messages=self.chat_history,
@@ -30,17 +32,25 @@ class GLM_4_7_flash:
             # max_tokens=65536,
             temperature=1.0
         )
+        has_print_sep = False
         
-        print('GLM-4.7-flash: ', end='')
         for chunk in self.response:
-            reasoning_content = getattr(chunk.choices[0].delta, 'reasoning_content', None)
-            if reasoning_content:
-                print(reasoning_content, end='', flush=True)
-
             content = getattr(chunk.choices[0].delta, 'content', None)
+            reasoning_content = getattr(chunk.choices[0].delta, 'reasoning_content', None)
+
+            if not has_print_sep and not reasoning_content and content:
+                print()
+                print()
+                print()
+                print('===========Answer===========')
+                has_print_sep = True
+
             if content:
                 print(content, end='', flush=True)
                 self.full_answer += content
+                
+            if reasoning_content:
+                print(reasoning_content, end='', flush=True)
 
         print()
         self.save_history('assistant', self.full_answer)
