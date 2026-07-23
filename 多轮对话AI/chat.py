@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
+import json
 # from pathlib import Path
 
 class GLM_4_7_flash:
@@ -54,15 +55,34 @@ class GLM_4_7_flash:
 
         print()
         self.save_history('assistant', self.full_answer)
-        print(self.chat_history)
+        self.full_answer = ''
+        self.print_ctnt(self.chat_history)
         print()
+
+    def print_ctnt(self, content):
+        print(json.dumps(
+                    content,
+                    indent=4,
+                    ensure_ascii=False
+                ))
+
+
+    def clear_history(self):
+        self.chat_history.clear()
+        print('对话记录清空完毕。')
+        self.print_ctnt(self.chat_history)
+        
 
 if __name__ == '__main__':
     # Project_Root_Path = Path(__file__).resolve().parent.parent
     load_dotenv()
     chatAi = GLM_4_7_flash()
-    prompt = input('user: ')
-    while prompt != 'exit':
+    while 1:
+        prompt = input('user: ')
+        if prompt == 'clear':
+            chatAi.clear_history()
+            continue
+        if prompt == 'exit':
+            break
         chatAi.user_input(prompt)
         chatAi.gen_response()
-        prompt = input('user: ')
