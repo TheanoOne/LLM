@@ -15,11 +15,11 @@ class GLM_4_7_flash:
         self.full_answer = ''
 
     # 用户输入
-    def user_input(self, prompt):
-        self.save_history('user', prompt)  # 记录用户输入内容
+    async def user_input(self, prompt):
+        await self.save_history('user', prompt)  # 记录用户输入内容
 
     # 保留对话记录
-    def save_history(self, role, content):
+    async def save_history(self, role, content):
         self.chat_history.append(
             {
                 'role': role,
@@ -65,7 +65,7 @@ class GLM_4_7_flash:
                 self.full_answer += content
                 
         print()
-        self.save_history('assistant', self.full_answer)
+        await self.save_history('assistant', self.full_answer)
         self.full_answer = ''  # 重置完整回答，避免full_answer在保存到chat_history时还留有之前的所有记录
         self.print_ctnt(self.chat_history)
         print()
@@ -105,9 +105,7 @@ async def main():
 
         await chatAi.user_input(prompt)
 
-        asyncio.create_task(
-            chatAi.gen_response()
-        )
+        await chatAi.gen_response()
 
 if __name__ == '__main__':
     asyncio.run(main())
